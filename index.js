@@ -5,7 +5,7 @@ const app = require('express')()
 
 //settings
 const port = 3000
-const version = "2.0.0"
+const version = "2.1.0"
 
 //router for fallzahlen
 app.get('/v1/hofland/corona', (req, res) => {
@@ -20,7 +20,7 @@ app.get('/v1/hofland/corona', (req, res) => {
 })
 
 //router for impfzahlen
-app.get('/v1/hofland/corona/impfung', (req, res) => {
+app.get('/v1/hofland/corona/vaccination', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     fetchImpfs()
     .then(count => {
@@ -29,6 +29,18 @@ app.get('/v1/hofland/corona/impfung', (req, res) => {
     .catch(error => {
         res.send(JSON.stringify({ success: false, version: version }));
     });
+})
+
+//router for hospitalisierung
+app.get('/v1/hofland/corona/hospital', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    fetchHospital()
+        .then(count => {
+            res.send(count);
+        })
+        .catch(error => {
+            res.send(JSON.stringify({ success: false, version: version }));
+        });
 })
 
 app.listen(port, () => {
@@ -117,3 +129,68 @@ const fetchImpfs = async () => {
      throw error;
     }
    };
+
+const fetchHospital = async () => {
+    try {
+        const response = await axios.get('https://www.landkreis-hof.de/coronavirus-wir-informieren/');
+
+        const $ = cheerio.load(response.data);
+
+        //naila - nailaNormalStationSuspected
+        const nnssRaw = $('.execphpwidget' ,'#execphp-43');
+        const nnssTxt = nnssRaw.text();
+        const nnss = nnssTxt.substring(2, nnssTxt.length - 2);
+        //naila - nailaNormalStationConfirmed
+        const nnscRaw = $('.execphpwidget' ,'#execphp-42');
+        const nnscTxt = nnscRaw.text();
+        const nnsc = nnscTxt.substring(2, nnscTxt.length - 2);
+        //naila - nailaIntensiveCareUnitSuspected
+        const nicusRaw = $('.execphpwidget' ,'#execphp-41');
+        const nicusTxt = nicusRaw.text();
+        const nicus = nicusTxt.substring(2, nicusTxt.length - 2);
+        //naila - nailaIntensiveCareUnitSuspected
+        const nicucRaw = $('.execphpwidget' ,'#execphp-40');
+        const nicucTxt = nicucRaw.text();
+        const nicuc = nicucTxt.substring(2, nicucTxt.length - 2);
+
+
+        //muenchberg - muenchbergNormalStationSuspected
+        const mnssRaw = $('.execphpwidget' ,'#execphp-39');
+        const mnssTxt = mnssRaw.text();
+        const mnss = mnssTxt.substring(2, mnssTxt.length - 2);
+        //muenchberg - muenchbergNormalStationConfirmed
+        const mnscRaw = $('.execphpwidget' ,'#execphp-38');
+        const mnscTxt = mnscRaw.text();
+        const mnsc = mnscTxt.substring(2, mnscTxt.length - 2);
+        //muenchberg - muenchbergIntensiveCareUnitSuspected
+        const micusRaw = $('.execphpwidget' ,'#execphp-37');
+        const micusTxt = micusRaw.text();
+        const micus = micusTxt.substring(2, micusTxt.length - 2);
+        //muenchberg - muenchbergIntensiveCareUnitSuspected
+        const micucRaw = $('.execphpwidget' ,'#execphp-36');
+        const micucTxt = micucRaw.text();
+        const micuc = micucTxt.substring(2, micucTxt.length - 2);
+
+        //hof - hofNormalStationSuspected
+        const hnssRaw = $('.execphpwidget' ,'#execphp-35');
+        const hnssTxt = hnssRaw.text();
+        const hnss = hnssTxt.substring(2, hnssTxt.length - 2);
+        //hof - hofNormalStationConfirmed
+        const hnscRaw = $('.execphpwidget' ,'#execphp-34');
+        const hnscTxt = hnscRaw.text();
+        const hnsc = hnscTxt.substring(2, hnscTxt.length - 2);
+        //hof - hofIntensiveCareUnitSuspected
+        const hicusRaw = $('.execphpwidget' ,'#execphp-33');
+        const hicusTxt = hicusRaw.text();
+        const hicus = hicusTxt.substring(2, hicusTxt.length - 2);
+        //hof - hofIntensiveCareUnitSuspected
+        const hicucRaw = $('.execphpwidget' ,'#execphp-32');
+        const hicucTxt = hicucRaw.text();
+        const hicuc = hicucTxt.substring(2, hicucTxt.length - 2);
+
+
+        return JSON.stringify({ success: true, version: version, data: { naila: { name: "Klinik Naila", normalStation: { suspected: nnss, confirmed: nnsc}, intenseCareUnitStation:{ suspected: nicus, confirmed: nicuc } }, muenchberg: { name: "Klinik Münchberg", normalStation: { suspected: mnss, confirmed: mnsc}, intenseCareUnitStation:{ name: "Sana Klinikum Hof", suspected: micus, confirmed: micuc } }, hof: { normalStation: { suspected: hnss, confirmed: hnsc}, intenseCareUnitStation:{ suspected: hicus, confirmed: hicuc } },  } ,timestamp: new Date().toISOString() })
+    } catch (error) {
+        throw error;
+    }
+};
