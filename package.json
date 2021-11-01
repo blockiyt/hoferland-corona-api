@@ -1,0 +1,16 @@
+{
+  "name": "corona-api",
+  "version": "1.0.0",
+  "description": "CoronaAPI for HoferLand",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "blocki, HLSB",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "*",
+    "express": "^4.17.1"
+  }
+}

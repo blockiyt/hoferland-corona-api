@@ -1,0 +1,1 @@
+screen -dmS corona-api bash -c "node index.js"
