@@ -39,7 +39,7 @@ To deploy this project simply type `node index.js` and let it run in a screen. T
 
 ## Links 🔗
 
-[Documentation](https://wiki.hoferlandstrikesback.de/website/corona-api)
+[Documentation](https://wiki.hoferlandstrikesback.de/website/corona-api), 
 [Demo](https://api.hoferlandstrikesback.de/v1/hofland/corona)
 
 ## License 📜
