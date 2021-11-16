@@ -11,7 +11,7 @@ const port = 3000
 const version = "2.2.0"
 
 //cache flusher
-cron.schedule('0 59 23 1/1 * ? *', () => {
+cron.schedule('59 59 23 * * *', () => {
     console.log(`${new Date().toUTCString()} : Flushed cache with ` +cache.getStats().keys + `keys`);
     cache.flushAll();
 });
