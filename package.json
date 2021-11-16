@@ -8,6 +8,8 @@
   "dependencies": {
     "axios": "^0.21.2",
     "cheerio": "*",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "node-cache": "^5.1.2",
+    "node-cron": "^3.0.0"
   }
 }

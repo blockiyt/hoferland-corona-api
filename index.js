@@ -1,34 +1,58 @@
 //imports
 const axios = require("axios");
 const cheerio = require("cheerio");
-const app = require('express')()
+const app = require('express')();
+const NodeCache = require("node-cache");
+const cron = require("node-cron");
+const cache = new NodeCache( { useClones: false, maxKeys: 1, deleteOnExpire: true } );
 
 //settings
 const port = 3000
-const version = "2.1.0"
+const version = "2.2.0"
+
+//cache flusher
+cron.schedule('0 59 23 1/1 * ? *', () => {
+    console.log(`${new Date().toUTCString()} : Flushed cache with ` +cache.getStats().keys + `keys`);
+    cache.flushAll();
+});
+
 
 //router for fallzahlen
 app.get('/v1/hofland/corona', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    fetchCounts()
-    .then(count => {
-        res.send(count);
-    })
-    .catch(error => {
-        res.send(JSON.stringify({ success: false, version: version }));
-    });
+    const tempcachevar = cache.get("cases");
+
+    if(tempcachevar == null){
+        fetchCounts()
+            .then(count => {
+                res.send(count);
+                cache.set("cases", count);
+            })
+            .catch(error => {
+                res.send(JSON.stringify({ success: false, version: version }));
+            });
+    }else {
+        res.send(tempcachevar);
+    }
 })
 
 //router for impfzahlen
 app.get('/v1/hofland/corona/vaccination', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
+    const tempcachevar = cache.get("vaccination");
+
+    if(tempcachevar == null){
     fetchImpfs()
-    .then(count => {
-        res.send(count);
-    })
-    .catch(error => {
-        res.send(JSON.stringify({ success: false, version: version }));
-    });
+        .then(count => {
+            res.send(count);
+            cache.set("vaccination", count);
+        })
+        .catch(error => {
+            res.send(JSON.stringify({ success: false, version: version }));
+        });
+    }else {
+        res.send(tempcachevar);
+    }
 })
 
 //router for hospitalisierung
