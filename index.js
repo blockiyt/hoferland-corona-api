@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 const app = require('express')();
 const NodeCache = require("node-cache");
 const cron = require("node-cron");
-const cache = new NodeCache( { useClones: false, maxKeys: 1, deleteOnExpire: true } );
+const cache = new NodeCache( { useClones: false, maxKeys: 2, deleteOnExpire: true } );
 
 //settings
 const port = 3000
