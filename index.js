@@ -8,12 +8,15 @@ const cache = new NodeCache( { useClones: false, maxKeys: 2, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.2.0"
+const version = "2.2.1"
 
 //cache flusher
 cron.schedule('59 59 23 * * *', () => {
-    console.log(`${new Date().toUTCString()} : Flushed cache with ` +cache.getStats().keys + `keys`);
+    console.log(`${new Date().toUTCString()} : Flushed cache with ` + cache.getStats().keys + `keys`);
     cache.flushAll();
+}, {
+    scheduled: true,
+    timezone: "Europe/Berlin"
 });
 
 
