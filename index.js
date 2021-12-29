@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 2, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.2.1"
+const version = "2.2.2"
 
 //cache flusher
 cron.schedule('59 59 23 * * *', () => {
@@ -108,8 +108,24 @@ const fetchCounts = async () => {
      const fallstadttxt = fallstadtraw.text();
      const fallstadt = fallstadttxt.replace(",", ".");
 
-     //return as JSON
-    return JSON.stringify({ succes: true, version: version, inzidenz: { land: falllk, stadt: fallstadt }, werte: { currentInfected: active, totalInfected: all, healed: healed, deaths: dead}, timestamp: new Date().toISOString()});
+     const callback = {
+         success: true,
+         version: version,
+         inzidenz: {
+             land: falllk,
+             stadt: fallstadt
+         },
+         werte: {
+             currentInfected: active,
+             totalInfected: all,
+             healed: healed,
+             death: dead
+         },
+         timestamp: new Date().toISOString()
+     }
+
+    //return as JSON
+    return JSON.stringify(callback);
  } catch (error) {
   throw error;
  }
@@ -121,37 +137,52 @@ const fetchImpfs = async () => {
 
        const $ = cheerio.load(response.data);
 
-        //Impfzahlen
-        const ImpfZentrumGesamtRaw = $('.execphpwidget' ,'#execphp-22');
-        const ImpfZentrumGesamtTxt = ImpfZentrumGesamtRaw.text();
-        const impfZentrumGesamt = ImpfZentrumGesamtTxt.substring(2, ImpfZentrumGesamtTxt.length - 2);
+       const firstVaccRaw = $('.execphpwidget' ,'#execphp-46') ;
+       const firstVaccTxt = firstVaccRaw.text();
+       const firstVacc = firstVaccTxt.substring(2, firstVaccTxt.length - 2);
 
-        const ImpfZentrumErstRaw = $('.execphpwidget' ,'#execphp-23');
-        const ImpfZentrumErstTxt = ImpfZentrumErstRaw.text();
-        const impfZentrumErst = ImpfZentrumErstTxt.substring(2, ImpfZentrumErstTxt.length - 2);
+        const firstVaccPercentRaw = $('.execphpwidget > strong' ,'#execphp-47') ;
+        const firstVaccPercentTxt = firstVaccPercentRaw.text();
+        const firstVaccPercent = firstVaccPercentTxt.replace(",", ".");
 
-        const HausartztGesamtRaw = $('.execphpwidget' ,'#execphp-24');
-        const HausartztGesamtTxt = HausartztGesamtRaw.text();
-        const hausartztGesamt = HausartztGesamtTxt.substring(2, HausartztGesamtTxt.length - 2);
+        const secondVaccRaw = $('.execphpwidget' ,'#execphp-22') ;
+        const secondVaccTxt = secondVaccRaw.text();
+        const secondVacc = secondVaccTxt.substring(2, secondVaccTxt.length - 2);
 
-        const HausartztErstRaw = $('.execphpwidget' ,'#execphp-25');
-        const HausartztErstTxt = HausartztErstRaw.text();
-        const hausartztErst = HausartztErstTxt.substring(2, HausartztErstTxt.length - 2);
+        const secondVaccPercentRaw = $('.execphpwidget > strong' ,'#execphp-30') ;
+        const secondVaccPercentTxt = secondVaccPercentRaw.text();
+        const secondVaccPercent = secondVaccPercentTxt.replace(",", ".");
 
-        //Quote
-        const QuoteHoferLandRaw = $('.execphpwidget > strong' ,'#execphp-26');
-        const QuoteHoferLandTxt = QuoteHoferLandRaw.text();
-        const quoteHoferLand = QuoteHoferLandTxt.replace(",", ".");
+        const thirdVaccRaw = $('.execphpwidget' ,'#execphp-23') ;
+        const thirdVaccTxt = thirdVaccRaw.text();
+        const thirdVacc = thirdVaccTxt.substring(2, thirdVaccTxt.length - 2);
 
-        const QuoteUeber12Raw = $('.execphpwidget > strong' ,'#execphp-28');
-        const QuoteUeber12Txt = QuoteUeber12Raw.text();
-        const quoteUeber12 = QuoteUeber12Txt.replace(",", ".");
+        const thirdVaccPercentRaw = $('.execphpwidget > strong' ,'#execphp-44') ;
+        const thirdVaccPercentTxt = thirdVaccPercentRaw.text();
+        const thirdVaccPercent = thirdVaccPercentTxt.replace(",", ".");
 
-        const VollRaw = $('.execphpwidget > strong' ,'#execphp-30');
-        const VollTxt = VollRaw.text();
-        const voll = VollTxt.replace(",", ".");
+        const over12PercentRaw = $('.execphpwidget > strong' ,'#execphp-28') ;
+        const over12PercentTxt = over12PercentRaw.text();
+        const over12Percent = over12PercentTxt.replace(",", ".");
 
-       return JSON.stringify({ success: true, version: version, impfQuote: { quoteHofLand: quoteHoferLand, quoteUeber12: quoteUeber12, voll: voll}, werte: { impfZentrumErst: impfZentrumErst, impfZentrumGesamt: impfZentrumGesamt, hausartztErst: hausartztErst, hausartztGesamt: hausartztGesamt}, timestamp: new Date().toISOString()})
+        const callback = {
+            success: true,
+            version: version,
+            quote: {
+                first: firstVaccPercent,
+                second: secondVaccPercent,
+                third: thirdVaccPercent,
+                over12: over12Percent
+            },
+            values: {
+                first: firstVacc,
+                second: secondVacc,
+                third: thirdVacc
+            },
+            timestamp: new Date().toISOString()
+        }
+
+       return JSON.stringify(callback)
     } catch (error) {
      throw error;
     }
