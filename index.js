@@ -61,17 +61,24 @@ app.get('/v1/hofland/corona/vaccination', (req, res) => {
 //router for hospitalisierung
 app.get('/v1/hofland/corona/hospital', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    fetchHospital()
-        .then(count => {
-            res.send(count);
-        })
-        .catch(error => {
-            res.send(JSON.stringify({ success: false, version: version }));
-        });
+    const tempcachevar = cache.get("hospital");
+
+    if(tempcachevar != null){
+        fetchHospital()
+            .then(count => {
+                res.send(count);
+                cache.set("hospital", count)
+            })
+            .catch(error => {
+                res.send(JSON.stringify({ success: false, version: version }));
+            });
+    }else {
+        res.send(tempcachevar)
+    }
 })
 
 app.listen(port, () => {
-    console.log(`HoferLand Corona API (v${version}) by HLSB auf Port ${port}`)
+    console.log(`HoferLand Corona API (v${version}) by Luca Heß on port ${port}`)
 })
 
 
