@@ -118,11 +118,11 @@ const fetchCounts = async () => {
      const callback = {
          success: true,
          version: version,
-         inzidenz: {
+         incidence: {
              land: falllk,
              stadt: fallstadt
          },
-         werte: {
+         values: {
              currentInfected: active,
              totalInfected: all,
              healed: healed,
@@ -168,9 +168,9 @@ const fetchImpfs = async () => {
         const thirdVaccPercentTxt = thirdVaccPercentRaw.text();
         const thirdVaccPercent = thirdVaccPercentTxt.replace(",", ".");
 
-        const over12PercentRaw = $('.execphpwidget > strong' ,'#execphp-28') ;
-        const over12PercentTxt = over12PercentRaw.text();
-        const over12Percent = over12PercentTxt.replace(",", ".");
+        const over5PercentRaw = $('.execphpwidget > strong' ,'#execphp-28') ;
+        const over5PercentTxt = over5PercentRaw.text();
+        const over5Percent = over5PercentTxt.replace(",", ".");
 
         const callback = {
             success: true,
@@ -179,7 +179,7 @@ const fetchImpfs = async () => {
                 first: firstVaccPercent,
                 second: secondVaccPercent,
                 third: thirdVaccPercent,
-                over12: over12Percent
+                over_5_years: over5Percent
             },
             values: {
                 first: firstVacc,
