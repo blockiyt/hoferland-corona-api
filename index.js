@@ -118,11 +118,11 @@ const fetchCounts = async () => {
      const callback = {
          success: true,
          version: version,
-         incidence: {
+         inzidenz: {
              land: falllk,
              stadt: fallstadt
          },
-         values: {
+         werte: {
              currentInfected: active,
              totalInfected: all,
              healed: healed,
