@@ -25,7 +25,7 @@ app.get('/v1/hofland/corona', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     const tempcachevar = cache.get("cases");
 
-    if(tempcachevar == null){
+    if(typeof tempcachevar == "undefined"){
         fetchCounts()
             .then(count => {
                 res.send(count);
@@ -44,7 +44,7 @@ app.get('/v1/hofland/corona/vaccination', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     const tempcachevar = cache.get("vaccination");
 
-    if(tempcachevar == null){
+    if(typeof tempcachevar == "undefined"){
     fetchImpfs()
         .then(count => {
             res.send(count);
@@ -63,7 +63,7 @@ app.get('/v1/hofland/corona/hospital', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     const tempcachevar = cache.get("hospital");
 
-    if(tempcachevar != null){
+    if(typeof tempcachevar == "undefined"){
         fetchHospital()
             .then(count => {
                 res.send(count);
