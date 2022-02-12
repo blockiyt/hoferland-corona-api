@@ -78,7 +78,7 @@ app.get('/v1/hofland/corona/hospital', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`HoferLand Corona API (v${version}) by Luca Heß on port ${port}`)
+    console.log(`HoferLand Corona API (v${version}) by Luca Hess on port ${port}`)
 })
 
 
