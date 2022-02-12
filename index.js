@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 2, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.2.3"
+const version = "2.3.3"
 
 //cache flusher
 cron.schedule('0 0 * * *', () => {
