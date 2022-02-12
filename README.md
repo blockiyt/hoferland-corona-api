@@ -23,7 +23,7 @@ If you have any feedback, please reach out to me at developement@luca-hess.de
 ## Installation 👇🏼
 
 To install the project, download screen with `apt install screen`, then clone it to your local machine.
-Lastly do `./start.sh` and visit your browser on http://<ip>:3000
+Lastly do `./start.sh` and visit your browser on http://ip-of-your-machine:3000
   
 ## Deployment 🏹
 
