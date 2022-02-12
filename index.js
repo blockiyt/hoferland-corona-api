@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 2, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.2.3"
+const version = "2.3.3"
 
 //cache flusher
 cron.schedule('0 0 * * *', () => {
@@ -253,8 +253,48 @@ const fetchHospital = async () => {
         const hicucTxt = hicucRaw.text();
         const hicuc = hicucTxt.substring(2, hicucTxt.length - 2);
 
+        const callback = {
+            success: true,
+            version: version,
+            data: {
+                naila: {
+                    name: "Klinik Naila",
+                    normalStation: {
+                        suspected: nnss,
+                        confirmed: nnsc
+                    },
+                    intenseCareUnitStation: {
+                        suspected: nicus,
+                        confirmed: nicuc
+                    }
+                },
+                muenchberg: {
+                    name: "Klinik Münchberg",
+                    normalStation: {
+                        suspected: mnss,
+                        confirmed: mnsc
+                    },
+                    intenseCareUnitStation: {
+                        name: "Sana Klinikum Hof",
+                        suspected: micus,
+                        confirmed: micuc
+                    }
+                },
+                hof: {
+                    normalStation: {
+                        suspected: hnss,
+                        confirmed: hnsc
+                    },
+                    intenseCareUnitStation: {
+                        suspected: hicus,
+                        confirmed: hicuc
+                    }
+                },
+            },
+            timestamp: new Date().toISOString()
+        }
 
-        return JSON.stringify({ success: true, version: version, data: { naila: { name: "Klinik Naila", normalStation: { suspected: nnss, confirmed: nnsc}, intenseCareUnitStation:{ suspected: nicus, confirmed: nicuc } }, muenchberg: { name: "Klinik Münchberg", normalStation: { suspected: mnss, confirmed: mnsc}, intenseCareUnitStation:{ name: "Sana Klinikum Hof", suspected: micus, confirmed: micuc } }, hof: { normalStation: { suspected: hnss, confirmed: hnsc}, intenseCareUnitStation:{ suspected: hicus, confirmed: hicuc } },  } ,timestamp: new Date().toISOString() })
+        return JSON.stringify(callback)
     } catch (error) {
         throw error;
     }
