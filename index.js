@@ -108,12 +108,10 @@ const fetchCounts = async () => {
 
      //Inzidenzen
      const falllkraw = $('.execphpwidget > strong' ,'#execphp-17');
-     const falllktxt = falllkraw.text();
-     const falllk = falllktxt.replace(",", ".");
+     const falllk = falllkraw.text();
 
      const fallstadtraw = $('.execphpwidget > strong' ,'#execphp-18');
-     const fallstadttxt = fallstadtraw.text();
-     const fallstadt = fallstadttxt.replace(",", ".");
+     const fallstadt = fallstadtraw.text();
 
      const callback = {
          success: true,
