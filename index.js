@@ -8,11 +8,11 @@ const cache = new NodeCache( { useClones: false, maxKeys: 2, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.3.3"
+const version = "2.3.4"
 
 //cache flusher
 cron.schedule('0 0 * * *', () => {
-    console.log(`${new Date().toUTCString()} : Flushed cache with ` + cache.getStats().keys + `keys`);
+    log(`flushed cache with ` + cache.getStats().keys + `keys`);
     cache.flushAll();
 }, {
     scheduled: true,
@@ -23,62 +23,65 @@ cron.schedule('0 0 * * *', () => {
 //router for fallzahlen
 app.get('/v1/hofland/corona', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    const tempcachevar = cache.get("cases");
+    const cachevar = cache.get("cases");
 
-    if(typeof tempcachevar == "undefined"){
+    if(isUndefined(cachevar)){
         fetchCounts()
             .then(count => {
                 res.send(count);
                 cache.set("cases", count);
             })
             .catch(error => {
-                res.send(JSON.stringify({ success: false, version: version }));
+                log("MODE 1 | " + error)
+                res.send(JSON.stringify({ success: false, version: version, mode: 1 }));
             });
     }else {
-        res.send(tempcachevar);
+        res.send(cachevar);
     }
 })
 
 //router for impfzahlen
 app.get('/v1/hofland/corona/vaccination', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    const tempcachevar = cache.get("vaccination");
+    const cachevar = cache.get("vaccination");
 
-    if(typeof tempcachevar == "undefined"){
+    if(isUndefined(cachevar)){
     fetchImpfs()
         .then(count => {
             res.send(count);
             cache.set("vaccination", count);
         })
         .catch(error => {
-            res.send(JSON.stringify({ success: false, version: version }));
+            log("MODE 2 | " + error)
+            res.send(JSON.stringify({ success: false, version: version, mode: 2 }));
         });
     }else {
-        res.send(tempcachevar);
+        res.send(cachevar);
     }
 })
 
 //router for hospitalisierung
 app.get('/v1/hofland/corona/hospital', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    const tempcachevar = cache.get("hospital");
+    const cachevar = cache.get("hospital");
 
-    if(typeof tempcachevar == "undefined"){
+    if(isUndefined(cachevar)){
         fetchHospital()
             .then(count => {
                 res.send(count);
                 cache.set("hospital", count)
             })
             .catch(error => {
-                res.send(JSON.stringify({ success: false, version: version }));
+                log("MODE 3 | " + error)
+                res.send(JSON.stringify({ success: false, version: version, mode: 3 }));
             });
     }else {
-        res.send(tempcachevar)
+        res.send(cachevar)
     }
 })
 
 app.listen(port, () => {
-    console.log(`HoferLand Corona API (v${version}) by Luca Hess on port ${port}`)
+    log(`HoferLand Corona API (v${version}) by Luca Hess on port ${port}`)
 })
 
 
@@ -297,3 +300,12 @@ const fetchHospital = async () => {
         throw error;
     }
 };
+
+function log(msg){
+    const date = new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" });
+    console.log("[Corona-API (" + date + ")] " + msg)
+}
+
+function isUndefined(obj){
+    return typeof obj == "undefined";
+}
