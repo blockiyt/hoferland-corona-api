@@ -88,7 +88,6 @@ app.listen(port, () => {
 const fetchCounts = async () => {
  try {
      const response = await axios.get('https://www.landkreis-hof.de/coronavirus-wir-informieren/');
-
      const $ = cheerio.load(response.data);
 
      //Fallzahlen
@@ -119,15 +118,15 @@ const fetchCounts = async () => {
      const callback = {
          success: true,
          version: version,
-         inzidenz: {
-             land: falllk,
-             stadt: fallstadt
+         incidence: {
+             district: falllk,
+             city: fallstadt
          },
-         werte: {
-             currentInfected: active,
-             totalInfected: all,
-             healed: healed,
-             death: dead
+         infections: {
+             current: active,
+             total: all,
+             healthy: healed,
+             dead: dead
          },
          timestamp: new Date().toISOString()
      }
@@ -142,7 +141,6 @@ const fetchCounts = async () => {
 const fetchImpfs = async () => {
     try {
        const response = await axios.get('https://www.landkreis-hof.de/coronavirus-wir-informieren/');
-
        const $ = cheerio.load(response.data);
 
        const firstVaccRaw = $('.execphpwidget' ,'#execphp-46') ;
@@ -182,7 +180,7 @@ const fetchImpfs = async () => {
                 third: thirdVaccPercent,
                 over_5_years: over5Percent
             },
-            values: {
+            vaccination: {
                 first: firstVacc,
                 second: secondVacc,
                 third: thirdVacc
@@ -199,7 +197,6 @@ const fetchImpfs = async () => {
 const fetchHospital = async () => {
     try {
         const response = await axios.get('https://www.landkreis-hof.de/coronavirus-wir-informieren/');
-
         const $ = cheerio.load(response.data);
 
         //naila - nailaNormalStationSuspected
