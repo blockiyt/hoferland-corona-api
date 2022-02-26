@@ -80,19 +80,19 @@ const fetchCounts = async () => {
             //Fallzahlen
             const activeraw = $('.execphpwidget' ,'#execphp-14').children().first();
             const activetxt = activeraw.text();
-            const active = activetxt.substring(2, activetxt.length - 2);
+            const active = parseInt(activetxt.substring(2, activetxt.length - 2));
 
             const allraw = $('.execphpwidget' ,'#execphp-13').children().first();
             const alltxt = allraw.text();
-            const all = alltxt.substring(2, alltxt.length - 2);
+            const all = parseInt(alltxt.substring(2, alltxt.length - 2));
 
             const healedraw = $('.execphpwidget' ,'#execphp-15').children().first();
             const healedtxt = healedraw.text();
-            const healed = healedtxt.substring(2, healedtxt.length - 2);
+            const healed = parseInt(healedtxt.substring(2, healedtxt.length - 2));
 
             const deadraw = $('.execphpwidget' ,'#execphp-16').children().first();
             const deadtxt = deadraw.text();
-            const dead = deadtxt.substring(2, deadtxt.length - 2);
+            const dead = parseInt(deadtxt.substring(2, deadtxt.length - 2));
 
 
             //Inzidenzen
@@ -140,7 +140,7 @@ const fetchVacc = async () => {
 
             const firstVaccRaw = $('.execphpwidget' ,'#execphp-46') ;
             const firstVaccTxt = firstVaccRaw.text();
-            const firstVacc = firstVaccTxt.substring(2, firstVaccTxt.length - 2);
+            const firstVacc = parseInt(firstVaccTxt.substring(2, firstVaccTxt.length - 2));
 
             const firstVaccPercentRaw = $('.execphpwidget > strong' ,'#execphp-47') ;
             const firstVaccPercentTxt = firstVaccPercentRaw.text();
@@ -148,7 +148,7 @@ const fetchVacc = async () => {
 
             const secondVaccRaw = $('.execphpwidget' ,'#execphp-22') ;
             const secondVaccTxt = secondVaccRaw.text();
-            const secondVacc = secondVaccTxt.substring(2, secondVaccTxt.length - 2);
+            const secondVacc = parseInt(secondVaccTxt.substring(2, secondVaccTxt.length - 2));
 
             const secondVaccPercentRaw = $('.execphpwidget > strong' ,'#execphp-30') ;
             const secondVaccPercentTxt = secondVaccPercentRaw.text();
@@ -156,7 +156,7 @@ const fetchVacc = async () => {
 
             const thirdVaccRaw = $('.execphpwidget' ,'#execphp-23') ;
             const thirdVaccTxt = thirdVaccRaw.text();
-            const thirdVacc = thirdVaccTxt.substring(2, thirdVaccTxt.length - 2);
+            const thirdVacc = parseInt(thirdVaccTxt.substring(2, thirdVaccTxt.length - 2));
 
             const thirdVaccPercentRaw = $('.execphpwidget > strong' ,'#execphp-44') ;
             const thirdVaccPercentTxt = thirdVaccPercentRaw.text();
@@ -206,54 +206,54 @@ const fetchHospital = async () => {
             //naila - nailaNormalStationSuspected
             const nnssRaw = $('.execphpwidget' ,'#execphp-43');
             const nnssTxt = nnssRaw.text();
-            const nnss = nnssTxt.substring(2, nnssTxt.length - 2);
+            const nnss = parseInt(nnssTxt.substring(2, nnssTxt.length - 2));
             //naila - nailaNormalStationConfirmed
             const nnscRaw = $('.execphpwidget' ,'#execphp-42');
             const nnscTxt = nnscRaw.text();
-            const nnsc = nnscTxt.substring(2, nnscTxt.length - 2);
+            const nnsc = parseInt(nnscTxt.substring(2, nnscTxt.length - 2));
             //naila - nailaIntensiveCareUnitSuspected
             const nicusRaw = $('.execphpwidget' ,'#execphp-41');
             const nicusTxt = nicusRaw.text();
-            const nicus = nicusTxt.substring(2, nicusTxt.length - 2);
+            const nicus = parseInt(nicusTxt.substring(2, nicusTxt.length - 2));
             //naila - nailaIntensiveCareUnitSuspected
             const nicucRaw = $('.execphpwidget' ,'#execphp-40');
             const nicucTxt = nicucRaw.text();
-            const nicuc = nicucTxt.substring(2, nicucTxt.length - 2);
+            const nicuc = parseInt(nicucTxt.substring(2, nicucTxt.length - 2));
 
 
             //muenchberg - muenchbergNormalStationSuspected
             const mnssRaw = $('.execphpwidget' ,'#execphp-39');
             const mnssTxt = mnssRaw.text();
-            const mnss = mnssTxt.substring(2, mnssTxt.length - 2);
+            const mnss = parseInt(mnssTxt.substring(2, mnssTxt.length - 2));
             //muenchberg - muenchbergNormalStationConfirmed
             const mnscRaw = $('.execphpwidget' ,'#execphp-38');
             const mnscTxt = mnscRaw.text();
-            const mnsc = mnscTxt.substring(2, mnscTxt.length - 2);
+            const mnsc = parseInt(mnscTxt.substring(2, mnscTxt.length - 2));
             //muenchberg - muenchbergIntensiveCareUnitSuspected
             const micusRaw = $('.execphpwidget' ,'#execphp-37');
             const micusTxt = micusRaw.text();
-            const micus = micusTxt.substring(2, micusTxt.length - 2);
+            const micus = parseInt(micusTxt.substring(2, micusTxt.length - 2));
             //muenchberg - muenchbergIntensiveCareUnitSuspected
             const micucRaw = $('.execphpwidget' ,'#execphp-36');
             const micucTxt = micucRaw.text();
-            const micuc = micucTxt.substring(2, micucTxt.length - 2);
+            const micuc = parseInt(micucTxt.substring(2, micucTxt.length - 2));
 
             //hof - hofNormalStationSuspected
             const hnssRaw = $('.execphpwidget' ,'#execphp-35');
             const hnssTxt = hnssRaw.text();
-            const hnss = hnssTxt.substring(2, hnssTxt.length - 2);
+            const hnss = parseInt(hnssTxt.substring(2, hnssTxt.length - 2));
             //hof - hofNormalStationConfirmed
             const hnscRaw = $('.execphpwidget' ,'#execphp-34');
             const hnscTxt = hnscRaw.text();
-            const hnsc = hnscTxt.substring(2, hnscTxt.length - 2);
+            const hnsc = parseInt(hnscTxt.substring(2, hnscTxt.length - 2));
             //hof - hofIntensiveCareUnitSuspected
             const hicusRaw = $('.execphpwidget' ,'#execphp-33');
             const hicusTxt = hicusRaw.text();
-            const hicus = hicusTxt.substring(2, hicusTxt.length - 2);
+            const hicus = parseInt(hicusTxt.substring(2, hicusTxt.length - 2));
             //hof - hofIntensiveCareUnitSuspected
             const hicucRaw = $('.execphpwidget' ,'#execphp-32');
             const hicucTxt = hicucRaw.text();
-            const hicuc = hicucTxt.substring(2, hicucTxt.length - 2);
+            const hicuc = parseInt(hicucTxt.substring(2, hicucTxt.length - 2));
 
             const callback = {
                 success: true,
