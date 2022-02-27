@@ -9,6 +9,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 //settings
 const port = 3000
 const version = "2.5.0"
+const uri = "/v1/hofland/corona"
 
 //cache flusher
 cron.schedule('0 0 * * *', () => {
@@ -21,7 +22,7 @@ cron.schedule('0 0 * * *', () => {
 
 
 //router for fallzahlen
-app.get('/v1/hofland/corona', (req, res) => {
+app.get(uri, (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
     fetchCounts()
@@ -36,7 +37,7 @@ app.get('/v1/hofland/corona', (req, res) => {
 })
 
 //router for impfzahlen
-app.get('/v1/hofland/corona/vaccination', (req, res) => {
+app.get(uri + '/vaccination', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
     fetchVacc()
@@ -50,7 +51,7 @@ app.get('/v1/hofland/corona/vaccination', (req, res) => {
 })
 
 //router for hospitalisierung
-app.get('/v1/hofland/corona/hospital', (req, res) => {
+app.get(uri + '/hospital', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
     fetchHospital()
@@ -65,7 +66,7 @@ app.get('/v1/hofland/corona/hospital', (req, res) => {
 })
 
 //router for all
-app.get('/v1/hofland/corona/all', (req, res) => {
+app.get(uri + '/all', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     const cachevar = cache.get("all");
 
