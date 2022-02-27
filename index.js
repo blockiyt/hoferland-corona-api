@@ -4,11 +4,11 @@ const cheerio = require("cheerio");
 const app = require('express')();
 const NodeCache = require("node-cache");
 const cron = require("node-cron");
-const cache = new NodeCache( { useClones: false, maxKeys: 3, deleteOnExpire: true } );
+const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: true } );
 
 //settings
 const port = 3000
-const version = "2.4.0"
+const version = "2.5.0"
 
 //cache flusher
 cron.schedule('0 0 * * *', () => {
@@ -64,6 +64,43 @@ app.get('/v1/hofland/corona/hospital', (req, res) => {
 
 })
 
+//router for all
+app.get('/v1/hofland/corona/all', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    const cachevar = cache.get("all");
+
+    if(isUndefined(cachevar)){
+        let data = [];
+
+        fetchCounts()
+            .then(count => {
+                data[0] = count;
+                delete data[0].timestamp;
+                data[0].name = "count";
+                sendAll(res, data, cache)
+            })
+
+        fetchVacc()
+            .then(count => {
+                delete count.timestamp;
+                count.name = "vaccination"
+                data[1] = count;
+                sendAll(res, data, cache)
+            })
+
+        fetchHospital()
+            .then(count => {
+                delete count.timestamp;
+                count.name = "hospital"
+                data[2] = count
+                sendAll(res, data, cache)
+            })
+
+    }else {
+        res.send(cachevar);
+    }
+})
+
 app.listen(port, () => {
     log(`HoferLand Corona API (v${version}) by Luca Hess on port ${port}`)
 })
@@ -102,7 +139,8 @@ const fetchCounts = async () => {
             const fallstadtraw = $('.execphpwidget > strong' ,'#execphp-18');
             const fallstadt = fallstadtraw.text();
 
-            const callback = {
+            //freezing this object so it won't be overwritten
+            const callback = Object.freeze({
                 success: true,
                 version: version,
                 incidence: {
@@ -116,7 +154,7 @@ const fetchCounts = async () => {
                     dead: dead
                 },
                 timestamp: new Date().toISOString()
-            }
+            })
 
             cache.set("cases", callback);
             return callback;
@@ -166,7 +204,8 @@ const fetchVacc = async () => {
             const over5PercentTxt = over5PercentRaw.text();
             const over5Percent = over5PercentTxt.replace(",", ".");
 
-            const callback = {
+            //freezing this object so it won't be overwritten
+            const callback = Object.freeze({
                 success: true,
                 version: version,
                 quote: {
@@ -181,7 +220,8 @@ const fetchVacc = async () => {
                     third: thirdVacc
                 },
                 timestamp: new Date().toISOString()
-            }
+            })
+
 
             cache.set("vaccination", callback);
             return callback
@@ -255,7 +295,8 @@ const fetchHospital = async () => {
             const hicucTxt = hicucRaw.text();
             const hicuc = parseInt(hicucTxt.substring(2, hicucTxt.length - 2));
 
-            const callback = {
+            //freezing this object so it won't be overwritten
+            const callback = Object.freeze({
                 success: true,
                 version: version,
                 data: {
@@ -294,7 +335,7 @@ const fetchHospital = async () => {
                     },
                 },
                 timestamp: new Date().toISOString()
-            }
+            })
 
             cache.set("hospital", callback)
             return callback
@@ -305,6 +346,19 @@ const fetchHospital = async () => {
         return cachevar;
     }
 };
+
+let update = 0
+function sendAll(res, data, cache){
+    update++;
+    if(update === 3){
+        const callback = {
+            data: data,
+            timestamp: new Date().toISOString()
+        }
+        cache.set("all", callback)
+        res.send(callback);
+    }
+}
 
 function log(msg){
     const date = new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" });
