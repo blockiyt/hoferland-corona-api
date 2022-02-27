@@ -10,6 +10,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 const port = 3000
 const version = "2.5.0"
 const uri = "/v1/hofland/corona"
+const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 
 //cache flusher
 cron.schedule('0 0 * * *', () => {
@@ -112,7 +113,7 @@ const fetchCounts = async () => {
 
     if(isUndefined(cachevar)){
         try {
-            const response = await axios.get('https://www.landkreis-hof.de/coronavirus-wir-informieren/');
+            const response = await axios.get(url);
             const $ = cheerio.load(response.data);
 
             //Fallzahlen
@@ -174,7 +175,7 @@ const fetchVacc = async () => {
 
     if(isUndefined(cachevar)){
         try {
-            const response = await axios.get('https://www.landkreis-hof.de/coronavirus-wir-informieren/');
+            const response = await axios.get(url);
             const $ = cheerio.load(response.data);
 
             const firstVaccRaw = $('.execphpwidget' ,'#execphp-46') ;
@@ -241,7 +242,7 @@ const fetchHospital = async () => {
 
     if(isUndefined(cachevar)){
         try {
-            const response = await axios.get('https://www.landkreis-hof.de/coronavirus-wir-informieren/');
+            const response = await axios.get(url);
             const $ = cheerio.load(response.data);
 
             //naila - nailaNormalStationSuspected
