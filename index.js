@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.7.0"
+const version = "2.7.1"
 const uri = "/v1/hofland/corona"
 const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 let $ = null;
@@ -154,6 +154,7 @@ const fetchVacc = async () => {
         const callback = {
             success: true,
             version: version,
+            image: "https://www.impfung-hoferland.de/impfquote.png",
             quote: {
                 first: firstVaccPercent,
                 second: secondVaccPercent,
