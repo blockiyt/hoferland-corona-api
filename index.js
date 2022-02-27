@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.5.0"
+const version = "2.5.1"
 const uri = "/v1/hofland/corona"
 const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 
