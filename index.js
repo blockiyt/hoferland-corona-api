@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.6.0"
+const version = "2.7.0"
 const uri = "/v1/hofland/corona"
 const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 let $ = null;
@@ -90,7 +90,7 @@ const fetchCounts = async () => {
         const fallstadt = fallstadtraw.text();
 
         //freezing this object so it won't be overwritten
-        const callback = Object.freeze({
+        const callback = {
             success: true,
             version: version,
             incidence: {
@@ -104,7 +104,7 @@ const fetchCounts = async () => {
                 dead: dead
             },
             timestamp: new Date().toISOString()
-        })
+        }
 
         cache.set("cases", callback);
         return callback;
@@ -151,7 +151,7 @@ const fetchVacc = async () => {
         const over5Percent = over5PercentTxt.replace(",", ".");
 
         //freezing this object so it won't be overwritten
-        const callback = Object.freeze({
+        const callback = {
             success: true,
             version: version,
             quote: {
@@ -166,7 +166,7 @@ const fetchVacc = async () => {
                 third: thirdVacc
             },
             timestamp: new Date().toISOString()
-        })
+        }
 
 
         cache.set("vaccination", callback);
@@ -235,46 +235,44 @@ const fetchHospital = async () => {
         const hicuc = parseInt(hicucTxt.substring(2, hicucTxt.length - 2));
 
         //freezing this object so it won't be overwritten
-        const callback = Object.freeze({
+        const callback = {
             success: true,
             version: version,
-            data: {
-                naila: {
-                    name: "Klinik Naila",
-                    normalStation: {
-                        suspected: nnss,
-                        confirmed: nnsc
-                    },
-                    intenseCareUnitStation: {
-                        suspected: nicus,
-                        confirmed: nicuc
-                    }
+            naila: {
+                name: "Klinik Naila",
+                normalStation: {
+                    suspected: nnss,
+                    confirmed: nnsc
                 },
-                muenchberg: {
-                    name: "Klinik Münchberg",
-                    normalStation: {
-                        suspected: mnss,
-                        confirmed: mnsc
-                    },
-                    intenseCareUnitStation: {
-                        name: "Sana Klinikum Hof",
-                        suspected: micus,
-                        confirmed: micuc
-                    }
+                intenseCareUnitStation: {
+                    suspected: nicus,
+                    confirmed: nicuc
+                }
+            },
+            muenchberg: {
+                name: "Klinik Münchberg",
+                normalStation: {
+                    suspected: mnss,
+                    confirmed: mnsc
                 },
-                hof: {
-                    normalStation: {
-                        suspected: hnss,
-                        confirmed: hnsc
-                    },
-                    intenseCareUnitStation: {
-                        suspected: hicus,
-                        confirmed: hicuc
-                    }
+                intenseCareUnitStation: {
+                    name: "Sana Klinikum Hof",
+                    suspected: micus,
+                    confirmed: micuc
+                }
+            },
+            hof: {
+                normalStation: {
+                    suspected: hnss,
+                    confirmed: hnsc
                 },
+                intenseCareUnitStation: {
+                    suspected: hicus,
+                    confirmed: hicuc
+                }
             },
             timestamp: new Date().toISOString()
-        })
+        }
 
         cache.set("hospital", callback)
         return callback;
@@ -287,9 +285,16 @@ let setCacheUpdateCount = 0;
 function setCache(data, cache){
     setCacheUpdateCount++;
     if(setCacheUpdateCount === 3){
+        data.forEach(res => {
+            delete res.success;
+            delete res.version;
+            delete res.timestamp;
+        })
         const callback = {
-            data: data,
-            timestamp: new Date().toISOString()
+            success: true,
+            version: version,
+            timestamp: new Date().toISOString(),
+            data: data
         }
         cache.set("all", callback)
         log("loaded all data and saved it, api now usable")
@@ -312,10 +317,7 @@ async function getData() {
             cache.set("cases", count);
             log("loaded case data and saved it to cache")
 
-
             //caching
-            delete count.timestamp;
-            count.name = "count";
             loc[0] = count;
 
             //save to cache for "all"
@@ -329,8 +331,6 @@ async function getData() {
             log("loaded vaccination data and saved it to cache")
 
             //caching
-            delete count.timestamp;
-            count.name = "vaccination"
             loc[1] = count;
 
             //save to cache for "all"
@@ -343,17 +343,13 @@ async function getData() {
             cache.set("hospital", count);
             log("loaded hospital data and saved it to cache")
 
-
             //caching
-            delete count.timestamp;
-            count.name = "hospital"
             loc[2] = count
 
             //save to cache for "all"
             setCache(loc, cache)
         })
 }
-
 
 function log(msg){
     const date = new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" });
