@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.7.1"
+const version = "2.7.2"
 const uri = "/v1/hofland/corona"
 const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 let $ = null;
@@ -286,6 +286,8 @@ let setCacheUpdateCount = 0;
 function setCache(data, cache){
     setCacheUpdateCount++;
     if(setCacheUpdateCount === 3){
+        //reset update count
+        setCacheUpdateCount = 0;
         data.forEach(res => {
             delete res.success;
             delete res.version;
