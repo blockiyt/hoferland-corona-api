@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.7.2"
+const version = "2.6.2"
 const uri = "/v1/hofland/corona"
 const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 let $ = null;
@@ -54,10 +54,10 @@ app.get(uri + '/hospital', (req, res) => {
 })
 
 //router for all
-app.get(uri + '/all', (req, res) => {
+/*app.get(uri + '/all', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(cache.get("all"));
-})
+})*/
 
 
 const fetchCounts = async () => {
@@ -288,7 +288,7 @@ function setCache(data, cache){
     if(setCacheUpdateCount === 3){
         //reset update count
         setCacheUpdateCount = 0;
-        data.forEach(res => {
+        /*data.forEach(res => {
             delete res.success;
             delete res.version;
             delete res.timestamp;
@@ -299,7 +299,7 @@ function setCache(data, cache){
             timestamp: new Date().toISOString(),
             data: data
         }
-        cache.set("all", callback)
+        cache.set("all", callback)*/
         log("loaded all data and saved it, api now usable")
     }
 }
