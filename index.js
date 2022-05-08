@@ -8,7 +8,7 @@ const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: tru
 
 //settings
 const port = 3000
-const version = "2.6.2"
+const version = "2.6.3"
 const uri = "/v1/hofland/corona"
 const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 let $ = null;
@@ -44,13 +44,13 @@ app.get(uri + "/", (req, res) => {
 //router for impfzahlen
 app.get(uri + '/vaccination', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.send(cache.get("cases"));
+    res.send(cache.get("vaccination"));
 })
 
 //router for hospitalisierung
 app.get(uri + '/hospital', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.send(cache.get("cases"));
+    res.send(cache.get("hospital"));
 })
 
 //router for all
