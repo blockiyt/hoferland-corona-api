@@ -194,7 +194,7 @@ const fetchVacc = async () => {
         cache.set("all", allCache)
 
         cache.set("vaccination", callback);
-        return callback
+        return callback(false)
     }else {
         return cachevar;
     }
@@ -293,7 +293,7 @@ const fetchHospital = async () => {
         cache.set("all", allCache)
 
         cache.set("hospital", callback)
-        return callback;
+        return callback(false);
     }else {
         return cachevar;
     }
