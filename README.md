@@ -3,12 +3,6 @@
 
 An json API to get the current infection data from https://landkreis-hof.de/ written in NodeJS.
 
-
-## Feedback ⁉️
-
-If you have any feedback, please reach out to me at developement@luca-hess.de
-
-
 ## Installation 👇🏼
 
 ```js
@@ -33,4 +27,6 @@ pm2 start hoferland-corona-api.config.js
 
 - [@blocki](https://luca-hess.de/)
 
+## Feedback ⁉️
 
+If you have any feedback, please reach out to me at developement@luca-hess.de
