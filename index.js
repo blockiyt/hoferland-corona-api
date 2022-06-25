@@ -4,11 +4,11 @@ const cheerio = require("cheerio");
 const app = require('express')();
 const NodeCache = require("node-cache");
 const cron = require("node-cron");
-const cache = new NodeCache( { useClones: false, maxKeys: 4, deleteOnExpire: true } );
+const cache = new NodeCache( { useClones: false, maxKeys: 5, deleteOnExpire: true } );
 
 //settings
 const port = 3000
-const version = "2.7.0"
+const version = "2.7.1"
 const uri = "/v1/hofland/corona"
 const url = "https://www.landkreis-hof.de/coronavirus-wir-informieren/"
 let $ = null;
@@ -22,12 +22,6 @@ app.listen(port, () => {
     //now get data and cache it
     getData()
 })
-
-async function test(){
-    const response = await axios.get(url);
-    $ = cheerio.load(response.data);
-    fetchCounts().then(r => console.log(r))
-}
 
 //cache flusher
 cron.schedule('0 0 * * *', () => {
@@ -60,10 +54,10 @@ app.get(uri + '/hospital', (req, res) => {
 })
 
 //router for all
-/*app.get(uri + '/all', (req, res) => {
+app.get(uri + '/all', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(cache.get("all"));
-})*/
+})
 
 function parseComparisonText(text){
     return [text.substring(text.length - (text.length - 1), 0), text.substring(1, text.length)]
@@ -104,34 +98,43 @@ const fetchCounts = async () => {
         const landkreis = $('#execphp-17 > div > strong').text();
         const stadt = $('#execphp-18 > div > strong').text();
 
-        //freezing this object so it won't be overwritten
-        const callback = {
-            success: true,
-            version: version,
-            incidence: {
-                district: landkreis,
-                city: stadt
-            },
-            infections: {
-                current: active,
-                total: {
-                  count: all,
-                  comparison: parseComparisonText(allComparison)
+        const callback = (isAll = false) => {
+            const returnData = {
+                incidence: {
+                    district: landkreis,
+                    city: stadt
                 },
-                healthy: {
-                    count: healed,
-                    comparison: parseComparisonText(healedComparison)
-                },
-                dead: {
-                    count: dead,
-                    comparison: parseComparisonText(deadComparison)
+                infections: {
+                    current: active,
+                    total: {
+                        count: all,
+                        comparison: parseComparisonText(allComparison)
+                    },
+                    healthy: {
+                        count: healed,
+                        comparison: parseComparisonText(healedComparison)
+                    },
+                    dead: {
+                        count: dead,
+                        comparison: parseComparisonText(deadComparison)
+                    }
                 }
-            },
-            timestamp: new Date().toISOString()
+            };
+            if(!isAll){
+                Object.assign(returnData, {success: true})
+                Object.assign(returnData, {version: version})
+                Object.assign(returnData, {timestamp: new Date().toISOString()})
+            }
+            return returnData;
         }
 
+        const allCache = cache.get("all");
+        allCache[0] = callback(true)
+        cache.set("all", allCache)
+
         cache.set("cases", callback);
-        return callback;
+
+        return callback(false);
     }else {
         return cachevar;
     }
@@ -163,24 +166,32 @@ const fetchVacc = async () => {
 
         const over5YearPercent = $('#execphp-28 > div > strong').text().replace(",", ".");
 
-
-        const callback = {
-            success: true,
-            version: version,
-            image: "https://www.impfung-hoferland.de/impfquote.png",
-            quote: {
-                first: firstVaccPercent,
-                second: secondVaccPercent,
-                third: thirdVaccPercent,
-                over_5_years: over5YearPercent
-            },
-            vaccination: {
-                first: firstVacc,
-                second: secondVacc,
-                third: thirdVacc
-            },
-            timestamp: new Date().toISOString()
+        const callback = (isAll = false) => {
+            const returnData = {
+                image: "https://www.impfung-hoferland.de/impfquote.png",
+                quote: {
+                    first: firstVaccPercent,
+                    second: secondVaccPercent,
+                    third: thirdVaccPercent,
+                    over_5_years: over5YearPercent
+                },
+                vaccination: {
+                    first: firstVacc,
+                    second: secondVacc,
+                    third: thirdVacc
+                }
+            };
+            if(!isAll){
+                Object.assign(returnData, {success: true})
+                Object.assign(returnData, {version: version})
+                Object.assign(returnData, {timestamp: new Date().toISOString()})
+            }
+            return returnData;
         }
+
+        const allCache = cache.get("all");
+        allCache[1] = callback(true)
+        cache.set("all", allCache)
 
         cache.set("vaccination", callback);
         return callback
@@ -233,45 +244,53 @@ const fetchHospital = async () => {
         const hicucTxt = $('#execphp-32 > div').text();
         const hicuc = parseInt(hicucTxt.substring(2, hicucTxt.length - 2));
 
-        //freezing this object so it won't be overwritten
-        const callback = {
-            success: true,
-            version: version,
-            naila: {
-                name: "Klinik Naila",
-                normalStation: {
-                    suspected: nnss,
-                    confirmed: nnsc
+        const callback = (isAll = false) => {
+            const returnData = {
+                naila: {
+                    name: "Klinik Naila",
+                    normalStation: {
+                        suspected: nnss,
+                        confirmed: nnsc
+                    },
+                    intenseCareUnitStation: {
+                        suspected: nicus,
+                        confirmed: nicuc
+                    }
                 },
-                intenseCareUnitStation: {
-                    suspected: nicus,
-                    confirmed: nicuc
-                }
-            },
-            muenchberg: {
-                name: "Klinik Münchberg",
-                normalStation: {
-                    suspected: mnss,
-                    confirmed: mnsc
+                muenchberg: {
+                    name: "Klinik Münchberg",
+                    normalStation: {
+                        suspected: mnss,
+                        confirmed: mnsc
+                    },
+                    intenseCareUnitStation: {
+                        name: "Sana Klinikum Hof",
+                        suspected: micus,
+                        confirmed: micuc
+                    }
                 },
-                intenseCareUnitStation: {
-                    name: "Sana Klinikum Hof",
-                    suspected: micus,
-                    confirmed: micuc
+                hof: {
+                    normalStation: {
+                        suspected: hnss,
+                        confirmed: hnsc
+                    },
+                    intenseCareUnitStation: {
+                        suspected: hicus,
+                        confirmed: hicuc
+                    }
                 }
-            },
-            hof: {
-                normalStation: {
-                    suspected: hnss,
-                    confirmed: hnsc
-                },
-                intenseCareUnitStation: {
-                    suspected: hicus,
-                    confirmed: hicuc
-                }
-            },
-            timestamp: new Date().toISOString()
+            };
+            if(!isAll){
+                Object.assign(returnData, {success: true})
+                Object.assign(returnData, {version: version})
+                Object.assign(returnData, {timestamp: new Date().toISOString()})
+            }
+            return returnData;
         }
+
+        const allCache = cache.get("all");
+        allCache[2] = callback(true)
+        cache.set("all", allCache)
 
         cache.set("hospital", callback)
         return callback;
@@ -279,28 +298,6 @@ const fetchHospital = async () => {
         return cachevar;
     }
 };
-
-let setCacheUpdateCount = 0;
-function setCache(data, cache){
-    setCacheUpdateCount++;
-    if(setCacheUpdateCount === 3){
-        //reset update count
-        setCacheUpdateCount = 0;
-        /*data.forEach(res => {
-            delete res.success;
-            delete res.version;
-            delete res.timestamp;
-        })
-        const callback = {
-            success: true,
-            version: version,
-            timestamp: new Date().toISOString(),
-            data: data
-        }
-        cache.set("all", callback)*/
-        log("loaded all data and saved it, api now usable")
-    }
-}
 
 async function getData() {
     log("getting data from " + url)
@@ -310,7 +307,7 @@ async function getData() {
 
     log("loaded data and processing it...")
 
-    let loc = [];
+    cache.set("all", []);
 
     fetchCounts()
         .then(count => {
@@ -318,11 +315,7 @@ async function getData() {
             cache.set("cases", count);
             log("loaded case data and saved it to cache")
 
-            //caching
-            loc[0] = count;
-
-            //save to cache for "all"
-            setCache(loc, cache)
+            countToFinish()
         })
 
     fetchVacc()
@@ -331,11 +324,7 @@ async function getData() {
             cache.set("vaccination", count);
             log("loaded vaccination data and saved it to cache")
 
-            //caching
-            loc[1] = count;
-
-            //save to cache for "all"
-            setCache(loc, cache)
+            countToFinish()
         })
 
     fetchHospital()
@@ -344,12 +333,17 @@ async function getData() {
             cache.set("hospital", count);
             log("loaded hospital data and saved it to cache")
 
-            //caching
-            loc[2] = count
-
-            //save to cache for "all"
-            setCache(loc, cache)
+            countToFinish()
         })
+
+    let count = 0;
+    function countToFinish(){
+        count++;
+        if(count === 3){
+            count = 0;
+            log("loaded all data and saved it, api now usable")
+        }
+    }
 }
 
 function log(msg){
