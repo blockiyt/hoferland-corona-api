@@ -1,7 +1,7 @@
 
 # HoferLand Corona API 🦠
 
-An json API to get the current infection data from https://landkreis-hof.de/ written in NodeJS.
+A json API to get the current infection data from https://landkreis-hof.de/ written in NodeJS.
 
 ## Installation 👇🏼
 
