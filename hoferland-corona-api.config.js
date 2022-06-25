@@ -1,6 +1,6 @@
 module.exports = {
     apps : [{
-        name   : "hoferland-corona-api",
+        name   : "HoferLand-CoronaAPI",
         script : "./index.js"
     }]
 }
