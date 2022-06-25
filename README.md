@@ -5,7 +5,7 @@ An json API to get the current infection data from https://landkreis-hof.de/ wri
 
 ## Installation 👇🏼
 
-```js
+```javascript
 apt install pm2
 git clone https://github.com/blockiyt/hoferland-corona-api.git 
 cd hoferland-corona-api
