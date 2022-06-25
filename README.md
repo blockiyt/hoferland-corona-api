@@ -10,6 +10,7 @@ apt install pm2
 git clone https://github.com/blockiyt/hoferland-corona-api.git 
 cd hoferland-corona-api
 pm2 start hoferland-corona-api.config.js
+pm2 save
 ```
 
 ## Links 🔗
